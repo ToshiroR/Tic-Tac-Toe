@@ -2,6 +2,9 @@ const x_class = "x";
 const circle_class = "circle";
 const cellElement = document.querySelectorAll("[data-cell]");
 const board = document.getElementById("board");
+const winningMessageTextElement = document.getElementById("winning-message");
+const winningMessageText = document.querySelector("[winning-message-text]");
+
 let circleTurn;
 
 const winning_Combos = [
@@ -30,6 +33,10 @@ function handleClick(e) {
   const cell = e.target;
   const currentClass = circleTurn ? circle_class : x_class;
   placeMark(cell, currentClass);
+
+  if (checkWin(currentClass)) {
+    endGame(false);
+  }
   swapTurns();
   setBoardHoverClass();
 }
@@ -42,7 +49,6 @@ function placeMark(cell, currentClass) {
 //    swaps between  X and Circle   //
 function swapTurns() {
   circleTurn = !circleTurn;
-  console.log(circleTurn);
 }
 
 //    allows the X/circle hover effect to work    //
@@ -55,4 +61,22 @@ function setBoardHoverClass() {
   } else {
     board.classList.add(x_class);
   }
+}
+
+//    Check for win Function    //
+function checkWin(currentClass) {
+  return winning_Combos.some((combos) => {
+    return combos.every((index) => {
+      return cellElement[index].classList.contains(currentClass);
+    });
+  });
+}
+
+//    function for endgame message    //
+function endGame(draw) {
+  if (draw) {
+  } else {
+    winningMessageText.innerText = `${circleTurn ? "O's" : "X's"} Wins!`;
+  }
+  winningMessageTextElement.classList.add("show");
 }
