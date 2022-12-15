@@ -59,8 +59,8 @@ body {
 }
 
 /*    X icon for board    */
-.cell.x::after,
 .cell.x::before,
+.cell.x::after,
 .cell.circle::before {
   background-color: black;
 }
