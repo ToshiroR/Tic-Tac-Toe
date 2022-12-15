@@ -2,6 +2,7 @@ const x_class = "x";
 const circle_class = "circle";
 const cellElement = document.querySelectorAll("[data-cell]");
 const board = document.getElementById("board");
+const restartBtn = document.getElementById("restartButton");
 const winningMessageTextElement = document.getElementById("winning-message");
 const winningMessageText = document.querySelector("[winning-message-text]");
 
@@ -20,14 +21,18 @@ const winning_Combos = [
 
 //    eventlistener for clicking the tiles   //
 
+restartBtn.addEventListener("click", startGame);
 startGame();
-
 function startGame() {
   circleTurn = false;
   cellElement.forEach((cell) => {
+    cell.classList.remove(x_class);
+    cell.classList.remove(circle_class);
+    cell.removeEventListener("click", handleClick);
     cell.addEventListener("click", handleClick, { once: true });
   });
   setBoardHoverClass();
+  winningMessageTextElement.classList.remove("show");
 }
 function handleClick(e) {
   const cell = e.target;
@@ -36,9 +41,12 @@ function handleClick(e) {
 
   if (checkWin(currentClass)) {
     endGame(false);
+  } else if (isDraw()) {
+    endGame(true);
+  } else {
+    swapTurns();
+    setBoardHoverClass();
   }
-  swapTurns();
-  setBoardHoverClass();
 }
 
 //    styles the Dom    //
@@ -75,8 +83,18 @@ function checkWin(currentClass) {
 //    function for endgame message    //
 function endGame(draw) {
   if (draw) {
+    winningMessageText.innerText = "Draw!";
   } else {
     winningMessageText.innerText = `${circleTurn ? "O's" : "X's"} Wins!`;
   }
   winningMessageTextElement.classList.add("show");
+}
+
+//    If its a Draw   //
+function isDraw() {
+  return [...cellElement].every((cell) => {
+    return (
+      cell.classList.contains(x_class) || cell.classList.contains(circle_class)
+    );
+  });
 }
